@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PatientRecord.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
