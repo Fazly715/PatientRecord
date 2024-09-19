@@ -12,7 +12,7 @@ using PatientRecord.Server.Data;
 namespace PatientRecord.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240911144532_PatientTable")]
+    [Migration("20240911145836_PatientTable")]
     partial class PatientTable
     {
         /// <inheritdoc />
