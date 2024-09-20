@@ -7,7 +7,7 @@ using PatientRecord.Server.Data.Entities;
 namespace PatientRecord.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class PatientController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
@@ -19,7 +19,7 @@ namespace PatientRecord.Server.Controllers
 
         // GET api/patients
         [HttpGet]
-        public async IActionResult GetPatients ()
+        public async Task<IActionResult>GetPatients()
         {
             // Get Patients from database, return to client
             return Ok(await dbContext.Patients.ToListAsync());
@@ -28,10 +28,10 @@ namespace PatientRecord.Server.Controllers
 
         // GET api/patients/{id}
         [HttpGet("{id}")]
-        public async IActionResult GetPatientById (int id)
+        public async Task<IActionResult> GetPatientById (int id)
         {
             // Get Patient by Id from database, return to client
-            var patient = await dbContext.Patients.FirstOrDefaultAsync (x => x.Id == id);
+            var patient = await dbContext.Patients.FirstOrDefaultAsync(x => x.Id == id);
             if (patient == null)
             {
                 return NotFound();
@@ -41,7 +41,7 @@ namespace PatientRecord.Server.Controllers
 
         // POST api/patient
         [HttpPost]
-        public async IActionResult CreatePatient([FromBody] Patient patient)
+        public async Task<IActionResult> CreatePatient([FromBody] Patient patient)
         {
             // Post Patient from client, add to database
             if (patient == null)
@@ -56,7 +56,7 @@ namespace PatientRecord.Server.Controllers
 
         // PUT api/patient/{id}
         [HttpPut("{id}")]
-        public async IActionResult UpdatePatient(int id, [FromBody] Patient patient)
+        public async Task<IActionResult> UpdatePatient(int id, [FromBody] Patient patient)
         {
             // Put Patient from client, search Patient by Id from database, Update patient in database 
             if (id != patient.Id)
@@ -68,6 +68,8 @@ namespace PatientRecord.Server.Controllers
             {
                 dbContext.Patients.Update(patient);
                 await dbContext.SaveChangesAsync();
+
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -77,17 +79,17 @@ namespace PatientRecord.Server.Controllers
 
         // DELETE api/patient/{id}
         [HttpDelete("{id}")]
-        public async IActionResult DeletePatient(int id)
+        public async Task<IActionResult> DeletePatient(int id)
         {
             // Delete Patient by Id from database 
-            var pantient = await dbContext.Patients.FirstOrDefaultAsync(id);
+            var pantient = await dbContext.Patients.FirstOrDefaultAsync(x => x.Id == id);
             if (pantient == null)
             {
                 return NotFound();
             }
             dbContext.Patients.Remove(pantient);
             await dbContext.SaveChangesAsync();
-            return Created();
+            return Ok();
         }
 
     }   
