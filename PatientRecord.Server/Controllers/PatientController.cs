@@ -39,6 +39,34 @@ namespace PatientRecord.Server.Controllers
             return Ok(patient);
         }
 
+        // GET api/patients/{email}
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetPatientByEmail (string email)
+        {
+            // Get Patient by Email from database, return to client
+            var patient = await dbContext.Patients.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            return Ok(patient);
+        }
+
+        // GET api/patients/{search}
+        [HttpGet("{search}")]
+        public async Task<IActionResult> SearchPatientByName (string search)
+        {
+            // Get Patient by Search from database, return to client
+            var patients = await dbContext.Patients.Where(p => p.Name.ToLower().Contains(search.ToLower()))
+                                  .ToListAsync();
+            // p.Name = Carlos,search = car 
+            if (!patients.Any())
+            {
+                return NotFound();
+            }
+            return Ok(patients);
+        }
+
         // POST api/patient
         [HttpPost]
         public async Task<IActionResult> CreatePatient([FromBody] Patient patient)
